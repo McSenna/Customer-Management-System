@@ -7,6 +7,7 @@ import CustomerDashboard from '../customers/customers-pages/CustomerDashboard';
 import AdminLayout from '../admin/AdminLayout';
 import AdminDashboard from '../admin/admin-pages/AdminDashboard';
 import AdminCustomers from '../admin/admin-pages/AdminCustomers';
+import PublicAboutPage from '../pages/public-pages/PublicAboutPage';
 
 const Router = () => {
     return (
@@ -15,6 +16,7 @@ const Router = () => {
                 {/* Public Routes */}
                 <Route path='/' element={<PublicLayout/>}>
                     <Route index element={<PublicHomePages />} />
+                    <Route path='/about' element={<PublicAboutPage />} />
                 </Route>
                 
                 {/* Customer Routes */}
