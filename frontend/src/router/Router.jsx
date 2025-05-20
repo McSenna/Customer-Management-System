@@ -8,6 +8,8 @@ import AdminLayout from '../admin/AdminLayout';
 import AdminDashboard from '../admin/admin-pages/AdminDashboard';
 import AdminCustomers from '../admin/admin-pages/AdminCustomers';
 import PublicAboutPage from '../pages/public-pages/PublicAboutPage';
+import AdminProducts from '../admin/admin-pages/AdminProducts';
+import AdminOrders from '../admin/admin-pages/AdminOrders';
 
 const Router = () => {
     return (
@@ -22,15 +24,16 @@ const Router = () => {
                 {/* Customer Routes */}
                 <Route path='/customer' element={<CustomerLayout/>}>
                     <Route index element={<CustomerDashboard />} />
-                    {/* Add more customer routes here as needed */}
                 </Route>
                 
                 {/* Admin Routes */}
                 <Route path='/admin' element={<AdminLayout/>}>
                     <Route index element={<AdminDashboard />} />
                     <Route path="customers" element={<AdminCustomers />} />
-                    {/* Add more admin routes here as needed */}
+                    <Route path="products" element={<AdminProducts />} />
+                    <Route path="orders" element={<AdminOrders />} />
                 </Route>
+                
             </Routes>
         </BrowserRouter>
     );
