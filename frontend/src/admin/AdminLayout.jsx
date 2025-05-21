@@ -22,7 +22,6 @@ const AdminLayout = () => {
                     &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
                 </div>
             </footer>
-            <ChatSupport /> {/* Add ChatSupport here */}
         </div>
     );
 };
