@@ -1,6 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import CustomerHeader from './customer-components/CustonerHeader';
+import ChatSupport from '../components/ChatSupport';
+
 const CustomerLayout = () => {
     return (
         <div className="customer-layout">
@@ -11,6 +13,8 @@ const CustomerLayout = () => {
             <main className="customer-content">
                 <Outlet />
             </main>
+
+            <ChatSupport /> 
         </div>
     );
 };
