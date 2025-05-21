@@ -11,7 +11,7 @@ const LoginModal = ({ onClose }) => {
     
     const navigate = useNavigate();
 
-    const apiUrl = ' ';
+    const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -25,10 +25,11 @@ const LoginModal = ({ onClose }) => {
             return;
         }
 
-        // Admin login 
+        // Admin login hardcoded check (you might want to move this to server-side)
         if (email === 'admin@gmail.com' && password === 'password') {
             setLoading(false);
-            alert('Login successful');
+            localStorage.setItem('userRole', 'admin');
+            alert('Admin login successful');
             navigate('/admin');
             return;
         }
@@ -45,14 +46,27 @@ const LoginModal = ({ onClose }) => {
              
             console.log('Login response:', response.data);
             
-            if(response.data.error) {
+            if(response.data.type === 'error') {
                 setError(response.data.message || 'Login failed');
                 setLoading(false);
                 return;
             }
             
-            setLoading(false);
-            navigate('/customer');
+            if(response.data.type === 'success') {
+                // Store customer data in localStorage or state management
+                const customerData = response.data.customer;
+                localStorage.setItem('customerData', JSON.stringify(customerData));
+                localStorage.setItem('customerId', customerData.id);
+                localStorage.setItem('customerName', customerData.name);
+                localStorage.setItem('customerCode', customerData.customer_code);
+                localStorage.setItem('userRole', 'customer');
+                
+                setLoading(false);
+                navigate('/customer');
+            } else {
+                setError('Something went wrong. Please try again.');
+                setLoading(false);
+            }
 
         } catch (error) {
             console.error('Error logging in:', error);

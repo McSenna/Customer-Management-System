@@ -12,9 +12,15 @@ switch($action) {
         include './data/insert.php';
             insert();
             break;
+            
     case 'fetch':
         include './data/admin/fetch.php';
             fetchCustomer();
+            break;
+
+    case 'login':
+        include './data/public/login.php';
+            Login();
             break;
         
     default:
