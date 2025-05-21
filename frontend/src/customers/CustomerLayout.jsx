@@ -1,7 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import CustomerHeader from './customer-components/CustonerHeader';
-import ChatSupport from '../components/ChatSupport';
+import CustomerHeader from './customer-components/CustomerHeader'
 
 const CustomerLayout = () => {
     return (
