@@ -10,6 +10,10 @@ import AdminCustomers from '../admin/admin-pages/AdminCustomers';
 import PublicAboutPage from '../pages/public-pages/PublicAboutPage';
 import AdminProducts from '../admin/admin-pages/AdminProducts';
 import AdminOrders from '../admin/admin-pages/AdminOrders';
+import NotFound from '../auth/NotFound';
+import OrdersCart from '../customers/orders/OrdersCart';
+import CustomerProducts from '../customers/customers-pages/CustomerProducts';
+import CustomerProfile from '../customers/customers-pages/CustomerProfile';
 
 const Router = () => {
     return (
@@ -24,6 +28,11 @@ const Router = () => {
                 {/* Customer Routes */}
                 <Route path='/customer' element={<CustomerLayout/>}>
                     <Route index element={<CustomerDashboard />} />
+                    <Route path="dashboard" element={<CustomerDashboard />} />
+                    <Route path="products" element={<CustomerProducts/>} />
+                    <Route path="orders" element={<OrdersCart/>} />
+                    <Route path="profile" element={<CustomerProfile/>} />
+                    {/* Add more customer routes here */}
                 </Route>
                 
                 {/* Admin Routes */}
@@ -34,6 +43,7 @@ const Router = () => {
                     <Route path="orders" element={<AdminOrders />} />
                 </Route>
                 
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );

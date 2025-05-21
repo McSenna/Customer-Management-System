@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminHeader from './admin-components/AdminHeader';
-import ChatSupport from '../customers/components/ChatSupport'; // Corrected path
+import ChatSupport from '../components/ChatSupport'; // Corrected path
 
 const AdminLayout = () => {
     return (
@@ -15,7 +15,7 @@ const AdminLayout = () => {
                     <Outlet />
                 </div>
             </main>
-            
+
             {/* Footer */}
             <footer className="bg-white p-4 shadow-inner">
                 <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">

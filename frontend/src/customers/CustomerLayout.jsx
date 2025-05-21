@@ -1,12 +1,11 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import CustomerHeader from './customer-components/CustonerHeader'
-
+import CustomerHeader from './customer-components/CustonerHeader';
 const CustomerLayout = () => {
     return (
         <div className="customer-layout">
             <header>
-                <CustomerHeader />
+                <CustomerHeader/>
             </header>
             
             <main className="customer-content">

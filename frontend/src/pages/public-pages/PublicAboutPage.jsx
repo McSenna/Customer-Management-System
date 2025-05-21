@@ -3,7 +3,7 @@ import { Phone, Mail, MapPin, Globe, FileText, Clock, Users } from 'lucide-react
 
 const PublicAboutPage = () => {
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-8">
             {/* About Header */}
             <div className="text-center">
                 <h1 className="text-3xl font-bold text-gray-800">About Customer Management System</h1>
@@ -111,25 +111,41 @@ const PublicAboutPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
                     <div className="text-center">
                         <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-gray-500">JD</span>
+                            <span className="text-2xl font-bold text-gray-500">JLL</span>
                         </div>
-                        <h3 className="font-medium text-gray-800">John Doe</h3>
+                        <h3 className="font-medium text-gray-800">John Lenard Lorenzo</h3>
                         <p className="text-gray-500 text-sm">CEO & Founder</p>
                     </div>
                     
                     <div className="text-center">
                         <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-gray-500">JS</span>
+                            <span className="text-2xl font-bold text-gray-500">IJV</span>
                         </div>
-                        <h3 className="font-medium text-gray-800">Jane Smith</h3>
+                        <h3 className="font-medium text-gray-800">Ian James Villanueva</h3>
                         <p className="text-gray-500 text-sm">CTO</p>
                     </div>
                     
                     <div className="text-center">
                         <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
-                            <span className="text-2xl font-bold text-gray-500">RJ</span>
+                            <span className="text-2xl font-bold text-gray-500">KL</span>
                         </div>
-                        <h3 className="font-medium text-gray-800">Robert Johnson</h3>
+                        <h3 className="font-medium text-gray-800">Kenneth latonero</h3>
+                        <p className="text-gray-500 text-sm">Head of Customer Success</p>
+                    </div>
+                    
+                    <div className="text-center">
+                        <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span className="text-2xl font-bold text-gray-500">TS</span>
+                        </div>
+                        <h3 className="font-medium text-gray-800">Tristan Seblario</h3>
+                        <p className="text-gray-500 text-sm">Head of Customer Success</p>
+                    </div>
+                    
+                    <div className="text-center">
+                        <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <span className="text-2xl font-bold text-gray-500">AC</span>
+                        </div>
+                        <h3 className="font-medium text-gray-800">Alexa Cas</h3>
                         <p className="text-gray-500 text-sm">Head of Customer Success</p>
                     </div>
                 </div>
