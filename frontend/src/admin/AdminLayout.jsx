@@ -1,7 +1,6 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import AdminHeader from './admin-components/AdminHeader';
-import ChatSupport from '../components/ChatSupport'; // Corrected path
 
 const AdminLayout = () => {
     return (
@@ -22,7 +21,6 @@ const AdminLayout = () => {
                     &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
                 </div>
             </footer>
-            <ChatSupport /> {/* Add ChatSupport here */}
         </div>
     );
 };
