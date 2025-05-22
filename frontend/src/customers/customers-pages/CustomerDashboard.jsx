@@ -1,6 +1,18 @@
-import React from 'react';
+ import React, { useState, useEffect } from 'react';
 
 const CustomerDashboard = () => {
+    // Use state to store customer info
+    const [customerName, setCustomerName] = useState('Customer Name');
+    const [customerEmail, setCustomerEmail] = useState('customer@example.com');
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        const name = localStorage.getItem('customerName');
+        const email = localStorage.getItem('customerEmail');
+        if (name) setCustomerName(name);
+        if (email) setCustomerEmail(email);
+    }, []);
+
     return (
         <div className="px-6 py-8">
             <h1 className="text-2xl font-bold text-gray-800 mb-6">Welcome to Your Dashboard</h1>
@@ -49,8 +61,8 @@ const CustomerDashboard = () => {
                                 <img src="/image.png" alt="Profile" className="h-full w-full object-cover" />
                             </div>
                             <div>
-                                <p className="font-medium text-gray-800">Customer Name</p>
-                                <p className="text-sm text-gray-500">customer@example.com</p>
+                                <p className="font-medium text-gray-800">{customerName}</p>
+                                <p className="text-sm text-gray-500">{customerEmail}</p>
                             </div>
                         </div>
                         <div className="border-t border-gray-100 pt-3">

@@ -46,7 +46,7 @@ export default function ChatSupport() {
       responseArray = botResponses.thanks;
     } else if (lowerText.match(/\b(product|item|offering|sell|buy|purchase|catalog|inventory)\b/)) {
       responseArray = botResponses.product;
-    } else if (lowerText.match(/\b(price|cost|fee|how much|affordable|expensive|cheap|discount|promotion)\b/)) {
+    } else if (lowerText.match(/\b(price|cost|fee|how much|affordable|expensive|cheap|discount|promotion|pricing)\b/)) {
       responseArray = botResponses.pricing;
     } else if (lowerText.match(/\b(ship|delivery|arrive|shipping|deliver|send|receive|track|package)\b/)) {
       responseArray = botResponses.shipping;
@@ -180,7 +180,7 @@ export default function ChatSupport() {
                       {message.isBot ? (
                         <>
                           <MessageSquare size={14} className="mr-1" />
-                          <span className="text-xs font-medium">Support</span>
+                          <span className="text-xs font-medium">Customer Support Bot</span>
                         </>
                       ) : (
                         <>
@@ -235,7 +235,7 @@ export default function ChatSupport() {
       )}
       
       {/* CSS for typing animation */}
-      <style jsx>{`
+      <style>{`
         .dot-typing {
           position: relative;
           left: -9999px;
