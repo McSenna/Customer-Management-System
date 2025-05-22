@@ -553,58 +553,6 @@ export default function SmartChatSupport() {
           </div>
         </div>
       )}
-      
-      {/* CSS for typing animation */}
-      <style jsx>{`
-        .dot-typing {
-          position: relative;
-          left: -9999px;
-          width: 4px;
-          height: 4px;
-          border-radius: 5px;
-          background-color: #3b82f6;
-          color: #3b82f6;
-          box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          animation: dot-typing 1.5s infinite linear;
-        }
-
-        @keyframes dot-typing {
-          0% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-          16.667% {
-            box-shadow: 9984px -5px 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-          33.333% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-          50% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px -5px 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-          66.667% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-          83.333% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px -5px 0 0 #3b82f6;
-          }
-          100% {
-            box-shadow: 9984px 0 0 0 #3b82f6, 9999px 0 0 0 #3b82f6, 10014px 0 0 0 #3b82f6;
-          }
-        }
-
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 1;
-          }
-          50% {
-            opacity: 0.5;
-          }
-        }
-
-        .animate-pulse {
-          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-      `}</style>
     </div>
   );
 }
