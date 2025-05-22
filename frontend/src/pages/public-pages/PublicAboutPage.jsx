@@ -7,13 +7,12 @@ const PublicAboutPage = () => {
             {/* About Header */}
             <div className="text-center">
                 <h1 className="text-3xl font-bold text-gray-800">About Customer Management System</h1>
-               
             </div>
             
             {/* Company Information */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">Our Company</h2>
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6 text-justify">
                     CustomerCRM was founded in 2020 with a mission to simplify customer relationship management for businesses of all sizes. 
                     Our team of experienced professionals is dedicated to providing an exceptional customer management experience 
                     through innovative technology and outstanding support.

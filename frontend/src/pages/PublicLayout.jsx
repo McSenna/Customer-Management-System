@@ -16,11 +16,6 @@ const PublicLayout = () => {
                     <Outlet />
                 </main>
                 
-                <footer className="bg-white p-4 border-t">
-                    <div className="text-center text-gray-500 text-sm">
-                        © {new Date().getFullYear()} Customer Management System. All rights reserved.
-                    </div>
-                </footer>
             </div>
         </div>
     );
