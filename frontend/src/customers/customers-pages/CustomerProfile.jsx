@@ -22,6 +22,8 @@ const CustomerProfile = () => {
         const customerId = localStorage.getItem('customerId');
         const customerName = localStorage.getItem('customerName');
         const customerCode = localStorage.getItem('customerCode');
+        const customerPhone = localStorage.getItem('customerPhone');
+        const customerAddress = localStorage.getItem('customerAddress');
         const userRole = localStorage.getItem('userRole');
         
         // Check if user is logged in as a customer
@@ -41,6 +43,8 @@ const CustomerProfile = () => {
                     id: customerId || parsedData.id || '',
                     name: customerName || parsedData.name || '',
                     customer_code: customerCode || parsedData.customer_code || '',
+                    customer_adress : customerAddress || parsedData.customer_adress || 'No address available',
+                    phone: customerPhone || parsedData.phone || '',
                 });
             } catch (error) {
                 console.error('Error parsing customer data:', error);

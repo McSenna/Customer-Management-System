@@ -16,6 +16,11 @@ switch($action) {
         include './data/admin/fetch.php';
             fetchCustomer();
             break;
+            
+    case 'fetchproducts':
+        include './data/admin/fetchproducts.php';
+            fetchProducts();
+            break;
 
     case 'login':
         include './data/public/login.php';
@@ -25,6 +30,11 @@ switch($action) {
     case 'add':
         include './data/public/addcustomer.php';
             addCustomer();
+            break;
+
+    case 'addproducts':
+        include './data/admin/addproducts.php';
+            addProduct();
             break;
         
     default:
