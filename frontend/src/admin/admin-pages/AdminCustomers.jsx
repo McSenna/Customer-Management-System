@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Search, ChevronDown, ChevronUp, UserPlus, RefreshCw, Mail, Phone, User } from 'lucide-react';
+import AdminCreateAccountModal from '../admin-components/AdminCreateCustomerModal';
 
 const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
@@ -9,6 +10,7 @@ const AdminCustomers = () => {
   const [sortField, setSortField] = useState('name');
   const [sortDirection, setSortDirection] = useState('asc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const itemsPerPage = 5;
 
   const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
@@ -41,6 +43,15 @@ const AdminCustomers = () => {
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
     setCurrentPage(1);
+  };
+
+  const handleCustomerCreated = (newCustomer) => {
+    // Add the new customer to the list
+    const customerWithId = {
+      ...newCustomer,
+      id: Date.now() // Temporary ID - replace with actual ID from API
+    };
+    setCustomers(prev => [customerWithId, ...prev]);
   };
 
   const filteredCustomers = customers.filter((customer) => {
@@ -98,7 +109,7 @@ const AdminCustomers = () => {
           <div className="flex gap-2">
             <button 
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-              onClick={() => console.log('Add customer clicked')}
+              onClick={() => setIsModalOpen(true)}
             >
               <UserPlus size={18} />
               <span>Add Customer</span>
@@ -147,6 +158,16 @@ const AdminCustomers = () => {
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('address')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Mail size={16} className="text-gray-400" />
+                      <span>Address</span>
+                      {renderSortIcon('address')}
+                    </div>
+                  </th>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('phone')}
                   >
                     <div className="flex items-center gap-2">
@@ -168,6 +189,9 @@ const AdminCustomers = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{customer.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{customer.address}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{customer.phone}</div>
@@ -208,7 +232,6 @@ const AdminCustomers = () => {
                     </button>
                     
                     {Array.from({ length: Math.min(5, totalPages) }).map((_, idx) => {
-                      // Show 2 pages before and after current page, or adjust if at start/end
                       let pageNum;
                       if (totalPages <= 5) {
                         pageNum = idx + 1;
@@ -226,7 +249,7 @@ const AdminCustomers = () => {
                           onClick={() => setCurrentPage(pageNum)}
                           className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
                             currentPage === pageNum
-                              ? 'bg-blue-600 text-whitefocus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                              ? 'bg-blue-600 text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
                               : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
                           }`}
                         >
@@ -252,6 +275,13 @@ const AdminCustomers = () => {
           )}
         </>
       )}
+
+      {/* Create Customer Modal */}
+      <AdminCreateAccountModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCustomerCreated={handleCustomerCreated}
+      />
     </div>
   );
 };

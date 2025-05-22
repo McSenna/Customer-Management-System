@@ -15,12 +15,6 @@ const AdminLayout = () => {
                 </div>
             </main>
 
-            {/* Footer */}
-            <footer className="bg-white p-4 shadow-inner">
-                <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
-                    &copy; {new Date().getFullYear()} Your Company Name. All rights reserved.
-                </div>
-            </footer>
         </div>
     );
 };

@@ -1,5 +1,4 @@
 <?php
-// Uncomment the register route in api.php
 include_once './config/database.php';
 include_once './header/header.php';
 
@@ -21,6 +20,11 @@ switch($action) {
     case 'login':
         include './data/public/login.php';
             Login();
+            break;
+
+    case 'add':
+        include './data/public/addcustomer.php';
+            addCustomer();
             break;
         
     default:

@@ -3,7 +3,7 @@ import { Users, Shield, BarChart3, Clock, MessageCircle, Check } from 'lucide-re
 
 const PublicHomePages = () => {
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-white min-h-screen">
+    <div className="bg-gradient-to-b from-gray-50 to-white min-h-screen">
       {/* Hero Section */}
       <div className="py-16 px-6 md:px-12 lg:px-16 max-w-7xl mx-auto">
         <div className="text-center mb-12">
@@ -12,10 +12,10 @@ const PublicHomePages = () => {
               <Users className="h-12 w-12 text-white" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
-            CustomerCRM
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4">
+            Customer Management System
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
+          <p className="text-m md:text-2xl text-gray-600 max-w-3xl mx-auto mb-8">
             Simplify customer relationships and boost your business growth
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
