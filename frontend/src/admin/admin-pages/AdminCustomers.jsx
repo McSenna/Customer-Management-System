@@ -147,6 +147,16 @@ const AdminCustomers = () => {
                   </th>
                   <th 
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    onClick={() => handleSort('address')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Mail size={16} className="text-gray-400" />
+                      <span>Address</span>
+                      {renderSortIcon('address')}
+                    </div>
+                  </th>
+                  <th 
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('phone')}
                   >
                     <div className="flex items-center gap-2">
@@ -168,6 +178,9 @@ const AdminCustomers = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{customer.email}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-500">{customer.address}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-500">{customer.phone}</div>

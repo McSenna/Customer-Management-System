@@ -53,6 +53,7 @@ function Login() {
                     $_SESSION['customer_id'] = $customer['id'];
                     $_SESSION['customer_name'] = $customer['name'];
                     $_SESSION['customer_code'] = $customer['customer_code'];
+                    $_SESSION['address'] = $customer['address'];
                     $_SESSION['segment_id'] = $customer['segment_id'];
                     
                     // Don't include password hash in response
