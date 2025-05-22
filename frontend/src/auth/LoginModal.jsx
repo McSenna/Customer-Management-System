@@ -48,7 +48,7 @@ const LoginModal = ({ onClose }) => {
             console.log('Login response:', response.data);
             
             if(response.data.type === 'error') {
-                setError(response.data.message || 'Login failed');
+                setError(alert(response.data.message || 'Login failed'));
                 setLoading(false);
                 return;
             }
@@ -65,13 +65,13 @@ const LoginModal = ({ onClose }) => {
                 setLoading(false);
                 navigate('/customer');
             } else {
-                setError('Something went wrong. Please try again.');
+                setError(alert('Something went wrong. Please try again.'));
                 setLoading(false);
             }
 
         } catch (error) {
             console.error('Error logging in:', error);
-            setError('Login failed. Please check your credentials and try again.');
+            setError(alert('Login failed. Please check your credentials and try again.'));
             setLoading(false);
         }
     }

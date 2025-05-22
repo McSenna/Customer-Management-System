@@ -19,6 +19,7 @@ const Router = () => {
     return (
         <BrowserRouter> 
             <Routes>
+
                 {/* Public Routes */}
                 <Route path='/' element={<PublicLayout/>}>
                     <Route index element={<PublicHomePages />} />
@@ -44,6 +45,7 @@ const Router = () => {
                 </Route>
                 
                 <Route path="*" element={<NotFound />} />
+                
             </Routes>
         </BrowserRouter>
     );
