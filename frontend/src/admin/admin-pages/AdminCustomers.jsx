@@ -46,10 +46,9 @@ const AdminCustomers = () => {
   };
 
   const handleCustomerCreated = (newCustomer) => {
-    // Add the new customer to the list
     const customerWithId = {
       ...newCustomer,
-      id: Date.now() // Temporary ID - replace with actual ID from API
+      id: Date.now()
     };
     setCustomers(prev => [customerWithId, ...prev]);
   };
@@ -276,7 +275,6 @@ const AdminCustomers = () => {
         </>
       )}
 
-      {/* Create Customer Modal */}
       <AdminCreateAccountModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

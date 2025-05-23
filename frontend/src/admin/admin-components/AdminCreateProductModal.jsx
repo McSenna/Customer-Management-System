@@ -8,8 +8,10 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         price: '',
         category: '',
         stock: ''
-        // Removed product_code since it's auto-generated
     });
+
+    const [productImage, setProductImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const categories = [
         'Electronics',
@@ -45,6 +47,58 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         }
         if (submitError) {
             setSubmitError('');
+        }
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file type
+            const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+            if (!allowedTypes.includes(file.type)) {
+                setErrors(prev => ({
+                    ...prev,
+                    image: 'Invalid file type. Only JPG, JPEG, PNG, GIF are allowed.'
+                }));
+                return;
+            }
+
+            // Validate file size (2MB)
+            const maxSize = 2 * 1024 * 1024;
+            if (file.size > maxSize) {
+                setErrors(prev => ({
+                    ...prev,
+                    image: 'File size exceeds 2MB limit.'
+                }));
+                return;
+            }
+
+            setProductImage(file);
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImagePreview(e.target.result);
+            };
+            reader.readAsDataURL(file);
+
+            // Clear any previous image errors
+            if (errors.image) {
+                setErrors(prev => ({
+                    ...prev,
+                    image: ''
+                }));
+            }
+        }
+    };
+
+    const removeImage = () => {
+        setProductImage(null);
+        setImagePreview(null);
+        // Clear the file input
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.value = '';
         }
     };
 
@@ -91,22 +145,26 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         setSubmitError('');
         
         try {
-            const productData = {
-                name: formData.name.trim(),
-                description: formData.description.trim(),
-                price: parseFloat(formData.price),
-                category: formData.category,
-                stock: parseInt(formData.stock)
-                // Removed product_code since it's auto-generated
-            };
+            // Create FormData for file upload
+            const formDataToSend = new FormData();
+            formDataToSend.append('name', formData.name.trim());
+            formDataToSend.append('description', formData.description.trim());
+            formDataToSend.append('price', parseFloat(formData.price));
+            formDataToSend.append('category', formData.category);
+            formDataToSend.append('stock', parseInt(formData.stock));
+            
+            // Add image if selected
+            if (productImage) {
+                formDataToSend.append('product_image', productImage);
+            }
 
-            console.log('Sending product data:', productData);
+            console.log('Sending product data with image...');
 
-            const response = await axios.post(`${apiUrl}addproducts`, productData, {
+            const response = await axios.post(`${apiUrl}addproducts`, formDataToSend, {
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'multipart/form-data',
                 },
-                timeout: 10000 // 10 second timeout
+                timeout: 30000 // 30 second timeout for file upload
             });
             
             console.log('Response:', response.data);
@@ -126,8 +184,6 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
             console.error('Error creating product:', error);
             
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 console.error('Response data:', error.response.data);
                 console.error('Response status:', error.response.status);
                 
@@ -141,11 +197,9 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
                     setSubmitError(`Server error (${error.response.status}). Please try again.`);
                 }
             } else if (error.request) {
-                // The request was made but no response was received
                 console.error('Request error:', error.request);
                 setSubmitError('No response from server. Please check your connection and server status.');
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.error('Setup error:', error.message);
                 setSubmitError('Request setup error. Please try again.');
             }
@@ -161,10 +215,16 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
             price: '',
             category: '',
             stock: ''
-            // Removed product_code
         });
+        setProductImage(null);
+        setImagePreview(null);
         setErrors({});
         setSubmitError('');
+        // Clear the file input
+        const fileInput = document.querySelector('input[type="file"]');
+        if (fileInput) {
+            fileInput.value = '';
+        }
     };
 
     const handleClose = () => {
@@ -230,6 +290,69 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
                 )}
                 
                 <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                    {/* Product Image Upload */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Product Image
+                            <span className="text-gray-500 font-normal ml-1">(JPG, PNG, GIF - Max 2MB)</span>
+                        </label>
+                        
+                        {!imagePreview ? (
+                            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleImageChange}
+                                    className="hidden"
+                                    id="product-image-input"
+                                    disabled={loading}
+                                />
+                                <label
+                                    htmlFor="product-image-input"
+                                    className="cursor-pointer flex flex-col items-center"
+                                >
+                                    <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                    <p className="text-sm text-gray-600">
+                                        <span className="font-medium text-blue-600 hover:text-blue-500">Click to upload</span> or drag and drop
+                                    </p>
+                                    <p className="text-xs text-gray-500 mt-1">PNG, JPG, GIF up to 2MB</p>
+                                </label>
+                            </div>
+                        ) : (
+                            <div className="relative">
+                                <img
+                                    src={imagePreview}
+                                    alt="Product preview"
+                                    className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={removeImage}
+                                    disabled={loading}
+                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 shadow-lg transition-colors duration-200 disabled:opacity-50"
+                                >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                                    {productImage?.name}
+                                </div>
+                            </div>
+                        )}
+                        
+                        {errors.image && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {errors.image}
+                            </p>
+                        )}
+                    </div>
+
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                             Product Name *
