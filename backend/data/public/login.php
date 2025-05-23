@@ -40,8 +40,7 @@ function Login() {
         $password = $data['password'];
         
         if($email && $password) {
-            // ✅ Include address in the SELECT query
-            $stmt = $connect->prepare("SELECT id, password_hash, name, customer_code, segment_id, address FROM customers WHERE email = ?");
+            $stmt = $connect->prepare("SELECT id, password_hash, name, customer_code, segment_id FROM customers WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -54,9 +53,9 @@ function Login() {
                     $_SESSION['customer_id'] = $customer['id'];
                     $_SESSION['customer_name'] = $customer['name'];
                     $_SESSION['customer_code'] = $customer['customer_code'];
+                    $_SESSION['address'] = $customer['address'];
                     $_SESSION['segment_id'] = $customer['segment_id'];
-                    $_SESSION['address'] = isset($customer['address']) ? $customer['address'] : null;
-
+                    
                     // Don't include password hash in response
                     unset($customer['password_hash']);
                     

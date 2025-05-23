@@ -62,6 +62,8 @@ const LoginModal = ({ onClose }) => {
                 localStorage.setItem('customerId', customerData.id);
                 localStorage.setItem('customerName', customerData.name);
                 localStorage.setItem('customerCode', customerData.customer_code);
+                localStorage.setItem('customerAddress', customerData.customer_address);
+                localStorage.setItem('customerPhone', customerData.customer_phone);
                 localStorage.setItem('userRole', 'customer');
                 
                 setLoading(false);

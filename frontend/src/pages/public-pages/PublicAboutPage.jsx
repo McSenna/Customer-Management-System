@@ -168,7 +168,7 @@ const PublicAboutPage = () => {
                 <div className="group relative text-center">
                     <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-xl shadow-md transition-all duration-300 group-hover:shadow-lg">
                         <img 
-                            src="/api/placeholder/96/96" 
+                            src="/latonero.png" 
                             alt="Kenneth Latonero"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
@@ -194,7 +194,7 @@ const PublicAboutPage = () => {
                 <div className="group relative text-center">
                     <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-xl shadow-md transition-all duration-300 group-hover:shadow-lg">
                         <img 
-                            src="/api/placeholder/96/96" 
+                            src="/seblario.png" 
                             alt="Tristan Seblario"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
