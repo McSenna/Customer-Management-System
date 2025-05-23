@@ -174,6 +174,7 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
                 if (onProductCreated) {
                     onProductCreated(response.data);
                 }
+
                 resetForm();
                 onClose();
             } else {

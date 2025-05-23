@@ -45,6 +45,7 @@ const AdminProducts = () => {
             });
 
             // Axios automatically parses JSON response
+            fetchProducts();
             const result = response.data;
             
             if (result.success) {
