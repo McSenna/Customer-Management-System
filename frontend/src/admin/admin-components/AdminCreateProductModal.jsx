@@ -7,12 +7,13 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         description: '',
         price: '',
         category: '',
-        stock: '',
-        product_code: ''
+        stock: ''
+        // Removed product_code since it's auto-generated
     });
 
     const categories = [
         'Electronics',
+        'Mobile Phone',
         'Clothing',
         'Books',
         'Home & Garden',
@@ -78,7 +79,7 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-  const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
+    const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -95,16 +96,20 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
                 description: formData.description.trim(),
                 price: parseFloat(formData.price),
                 category: formData.category,
-                stock: parseInt(formData.stock),
-                product_code: formData.product_code.trim()
+                stock: parseInt(formData.stock)
+                // Removed product_code since it's auto-generated
             };
 
-            // Replace with your actual API endpoint
+            console.log('Sending product data:', productData);
+
             const response = await axios.post(`${apiUrl}addproducts`, productData, {
                 headers: {
                     'Content-Type': 'application/json',
-                }
+                },
+                timeout: 10000 // 10 second timeout
             });
+            
+            console.log('Response:', response.data);
             
             if (response.data.type === 'success') {
                 // Success - call the callback to refresh the product list
@@ -120,14 +125,29 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
         } catch (error) {
             console.error('Error creating product:', error);
             
-            if (error.response && error.response.data && error.response.data.message) {
-                setSubmitError(error.response.data.message);
-            } else if (error.response && error.response.status === 500) {
-                setSubmitError('Server error. Please try again later.');
-            } else if (error.code === 'NETWORK_ERROR') {
-                setSubmitError('Network error. Please check your connection.');
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                
+                if (error.response.data && error.response.data.message) {
+                    setSubmitError(error.response.data.message);
+                } else if (error.response.status === 500) {
+                    setSubmitError('Server error. Please check the server logs.');
+                } else if (error.response.status === 404) {
+                    setSubmitError('API endpoint not found. Please check your API URL.');
+                } else {
+                    setSubmitError(`Server error (${error.response.status}). Please try again.`);
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Request error:', error.request);
+                setSubmitError('No response from server. Please check your connection and server status.');
             } else {
-                setSubmitError('Failed to create product. Please try again.');
+                // Something happened in setting up the request that triggered an Error
+                console.error('Setup error:', error.message);
+                setSubmitError('Request setup error. Please try again.');
             }
         } finally {
             setLoading(false);
@@ -140,8 +160,8 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
             description: '',
             price: '',
             category: '',
-            stock: '',
-            product_code: ''
+            stock: ''
+            // Removed product_code
         });
         setErrors({});
         setSubmitError('');
@@ -178,11 +198,11 @@ const AdminCreateProductModal = ({ isOpen, onClose, onProductCreated }) => {
                 className="absolute inset-0 bg-transparent bg-opacity-50 backdrop-blur-sm transition-opacity duration-300"
                 onClick={handleClose}
             ></div>
-            <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] transform transition-all duration-300 scale-100 overflow-y-auto">
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[93vh] transform transition-all duration-300 scale-100 overflow-y-auto">
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
                     <div>
                         <h2 className="text-2xl font-bold text-gray-900">Add New Product</h2>
-                        <p className="text-sm text-gray-600 mt-1">Fill in the details to create a new product</p>
+                        <p className="text-sm text-gray-600 mt-1">Product code will be auto-generated</p>
                     </div>
                     <button
                         onClick={handleClose}
