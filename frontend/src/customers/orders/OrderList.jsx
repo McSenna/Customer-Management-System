@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Eye, Calendar, Filter, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom'; // <-- Added
+import { Search, CreditCard, Eye, Calendar, Filter, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
@@ -10,7 +10,7 @@ const OrderList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  const navigate = useNavigate(); // <-- Added
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -23,7 +23,8 @@ const OrderList = () => {
             total: 299.99,
             status: 'completed',
             items: 3,
-            paymentMethod: 'Credit Card'
+            paymentMethod: 'Credit Card',
+            paymentStatus: 'paid' // Added payment status
           },
           {
             id: 'ORD-002',
@@ -31,7 +32,8 @@ const OrderList = () => {
             total: 159.50,
             status: 'pending',
             items: 2,
-            paymentMethod: 'PayPal'
+            paymentMethod: 'PayPal',
+            paymentStatus: 'unpaid' // Added payment status
           },
           {
             id: 'ORD-003',
@@ -39,7 +41,8 @@ const OrderList = () => {
             total: 89.99,
             status: 'processing',
             items: 1,
-            paymentMethod: 'Bank Transfer'
+            paymentMethod: 'Bank Transfer',
+            paymentStatus: 'paid' // Added payment status
           },
           {
             id: 'ORD-004',
@@ -47,7 +50,8 @@ const OrderList = () => {
             total: 449.99,
             status: 'shipped',
             items: 5,
-            paymentMethod: 'Credit Card'
+            paymentMethod: 'Credit Card',
+            paymentStatus: 'paid' // Added payment status
           },
           {
             id: 'ORD-005',
@@ -55,7 +59,8 @@ const OrderList = () => {
             total: 199.99,
             status: 'cancelled',
             items: 2,
-            paymentMethod: 'PayPal'
+            paymentMethod: 'PayPal',
+            paymentStatus: 'refunded' // Added payment status
           }
         ];
         
@@ -94,8 +99,13 @@ const OrderList = () => {
   const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
-  const handleViewOrder = (orderId) => {
-    // Navigate to the order status page
+  // Handle payment navigation for unpaid orders
+  const handlePayOrder = (orderId) => {
+    navigate(`/customer/orders/${orderId}/payment`);
+  };
+
+  // Handle tracking navigation for paid orders
+  const handleTrackOrder = (orderId) => {
     navigate(`/customer/orders/${orderId}/status`);
   };
 
@@ -116,7 +126,7 @@ const OrderList = () => {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
-          <p className="text-gray-600">Manage and track all user orders</p>
+          <p className="text-gray-600">Manage and track all your orders</p>
         </div>
         <button
           onClick={handleCreateOrder}
@@ -206,16 +216,34 @@ const OrderList = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {order.paymentMethod}
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 
+                    order.paymentStatus === 'unpaid' ? 'bg-red-100 text-red-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
+                  </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button
-                    onClick={() => handleViewOrder(order.id)}
-                    className="flex items-center px-3 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
-                  >
-                    <Eye className="w-4 h-4 mr-1" />
-                    View
-                  </button>
+                  <div className="flex gap-2">
+                    {order.paymentStatus === 'unpaid' ? (
+                      <button
+                        onClick={() => handlePayOrder(order.id)}
+                        className="flex items-center px-3 py-1 text-green-600 hover:text-green-800 hover:bg-green-50 rounded transition-colors"
+                      >
+                        <CreditCard className="w-4 h-4 mr-1" />
+                        Pay
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleTrackOrder(order.id)}
+                        className="flex items-center px-3 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                      >
+                        <Eye className="w-4 h-4 mr-1" />
+                        Track
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

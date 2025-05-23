@@ -1,33 +1,4 @@
 <?php
-// Database connection should be included here
-// include 'db_connect.php';
-
-/**
- * Verify customer password
- * 
- * @param string $customerId The customer ID
- * @param string $password The plain password to verify
- * @return bool Whether password matches
- */
-function verifyPassword($customerId, $password) {
-    global $connect;
-    
-    $stmt = $connect->prepare("SELECT password_hash FROM customers WHERE id = ?");
-    $stmt->bind_param("i", $customerId);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows > 0) {
-        $customer = $result->fetch_assoc();
-        return password_verify($password, $customer['password_hash']);
-    }
-    
-    return false;
-}
-
-/**
- * Handle customer login
- */
 function Login() {
     global $connect;
 
@@ -40,7 +11,8 @@ function Login() {
         $password = $data['password'];
         
         if($email && $password) {
-            $stmt = $connect->prepare("SELECT id, password_hash, name, customer_code, segment_id FROM customers WHERE email = ?");
+            // Added address to the SELECT statement
+            $stmt = $connect->prepare("SELECT id, password_hash, name, customer_code, segment_id, address FROM customers WHERE email = ?");
             $stmt->bind_param("s", $email);
             $stmt->execute();
             $result = $stmt->get_result();
@@ -78,10 +50,3 @@ function Login() {
         echo json_encode(['type' => 'error', 'message' => 'Invalid request']);
     }
 }
-
-// Call the login function if this file is accessed directly
-if (basename($_SERVER['SCRIPT_FILENAME']) == basename(__FILE__)) {
-    Login();
-}
-?>
-    
