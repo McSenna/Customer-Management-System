@@ -17,6 +17,7 @@ import CustomerProfile from '../customers/customers-pages/CustomerProfile';
 import OrderList from '../customers/orders/OrderList';
 import OrderPayment from '../customers/orders/OrdersPayment';
 import OrderStatus from '../customers/orders/OrderStatus';
+import CustomerCart from '../customers/customers-pages/CustomerCart';
 
 const Router = () => {
     return (
@@ -39,6 +40,7 @@ const Router = () => {
                     <Route path="orders/list" element={<OrderList />} />
                     <Route path="orders/:id/payment" element={<OrderPayment />} />
                     <Route path="orders/:id/status" element={<OrderStatus />} />
+                    <Route path="customer/cart" element={<CustomerCart />} />
                 </Route>
                 
                 {/* Admin Routes */}
