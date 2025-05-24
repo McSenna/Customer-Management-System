@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { User, Phone, Mail, Calendar, CreditCard, MapPin, FileText, Settings, LogOut } from 'lucide-react';
+import { User, Phone, Mail, Calendar, CreditCard, MapPin, FileText, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CustomerProfile = () => {
     const [customerData, setCustomerData] = useState({
@@ -11,65 +12,74 @@ const CustomerProfile = () => {
         phone: '',
         address: 'No address available',
         registration_date: 'Not available',
-        subscription_status: 'Inactive'
+        subscription_status: 'Inactive',
+        loyalty_points: 0
     });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
+    const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
+
     useEffect(() => {
-        // Retrieve customer data from localStorage
-        const storedData = localStorage.getItem('customerData');
         const customerId = localStorage.getItem('customerId');
-        const customerName = localStorage.getItem('customerName');
-        const customerCode = localStorage.getItem('customerCode');
-        const customerPhone = localStorage.getItem('customerPhone');
-        const customerAddress = localStorage.getItem('customerAddress');
         const userRole = localStorage.getItem('userRole');
-        
+
         // Check if user is logged in as a customer
-        if (!userRole || userRole !== 'customer') {
+        if (!userRole || userRole !== 'customer' || !customerId) {
             alert('Please login to access your profile');
             navigate('/login');
             return;
         }
 
-        if (storedData) {
+        // Fetch customer data from API
+        const fetchCustomerData = async () => {
             try {
-                // Parse stored JSON data
-                const parsedData = JSON.parse(storedData);
-                setCustomerData({
-                    ...customerData,
-                    ...parsedData,
-                    id: customerId || parsedData.id || '',
-                    name: customerName || parsedData.name || '',
-                    customer_code: customerCode || parsedData.customer_code || '',
-                    customer_adress : customerAddress || parsedData.customer_adress || 'No address available',
-                    phone: customerPhone || parsedData.phone || '',
+                const response = await axios.get(`${apiUrl}get_customer`, {
+                    params: { customer_id: customerId }
                 });
-            } catch (error) {
-                console.error('Error parsing customer data:', error);
-            }
-        } else if (customerId && customerName && customerCode) {
-            // If we only have basic data but not the full object
-            setCustomerData({
-                ...customerData,
-                id: customerId,
-                name: customerName,
-                customer_code: customerCode
-            });
-            
-            // You could fetch additional customer data from API here if needed
-            // fetchCustomerData(customerId);
-        }
-        
-        setLoading(false);
-    }, [navigate]);
+                const { error, message, data } = response.data;
 
+                if (error) {
+                    throw new Error(message || 'Failed to fetch customer data');
+                }
+
+                setCustomerData({
+                    id: data.id || '',
+                    name: data.name || '',
+                    customer_code: data.customer_code || '',
+                    email: data.email || 'Not available',
+                    phone: data.phone || 'Not available',
+                    address: data.address || 'No address available',
+                    registration_date: data.created_at || 'Not available',
+                    subscription_status: data.subscription_status || 'Inactive',
+                    loyalty_points: data.loyalty_points || 0
+                });
+            } catch (err) {
+                console.error('Error fetching customer data:', err);
+                setError('Failed to load profile data. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCustomerData();
+    }, [navigate]);
 
     if (loading) {
         return (
             <div className="flex justify-center items-center h-screen">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="container mx-auto px-4 py-8 max-w-5xl">
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                    {error}
+                </div>
             </div>
         );
     }
@@ -106,7 +116,7 @@ const CustomerProfile = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Email Address</p>
-                                    <p className="text-gray-800">{customerData.email || 'Not available'}</p>
+                                    <p className="text-gray-800">{customerData.email}</p>
                                 </div>
                             </div>
                             
@@ -116,7 +126,7 @@ const CustomerProfile = () => {
                                 </div>
                                 <div>
                                     <p className="text-sm text-gray-500">Phone Number</p>
-                                    <p className="text-gray-800">{customerData.phone || 'Not available'}</p>
+                                    <p className="text-gray-800">{customerData.phone}</p>
                                 </div>
                             </div>
                             
@@ -161,6 +171,16 @@ const CustomerProfile = () => {
                                     }`}>
                                         {customerData.subscription_status}
                                     </div>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center">
+                                <div className="bg-blue-50 p-2 rounded-md mr-4">
+                                    <CreditCard className="h-5 w-5 text-blue-600" />
+                                </div>
+                                <div>
+                                    <p className="text-sm text-gray-500">Loyalty Points</p>
+                                    <p className="text-gray-800">{customerData.loyalty_points}</p>
                                 </div>
                             </div>
                         </div>

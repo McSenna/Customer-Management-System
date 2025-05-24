@@ -36,6 +36,11 @@ switch($action) {
         include './data/admin/addproducts.php';
             addProduct();
             break;
+    
+    case 'get_customer':
+        include './data/public/get_customer.php';
+        get_customer();
+        break;
         
     default:
         $res = [
