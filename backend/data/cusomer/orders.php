@@ -1,64 +1,49 @@
 <?php
-session_start();
+include_once './config/database.php';
+
 header('Content-Type: application/json');
 
-// Database connection
-$host = 'localhost';
-$db   = 'customer_management';  // change to your DB name
-$user = 'root';  // change to your DB user
-$pass = '';  // change to your DB password
+$purchase_id = $_GET['purchase_id'] ?? null;
 
-$conn = new mysqli($host, $user, $pass, $db);
-
-// Check connection
-if ($conn->connect_error) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Database connection failed']);
-    exit();
-}
-
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Unauthorized']);
-    exit();
-}
-
-$userId = $_SESSION['user_id'];
-
-// Fetch purchases for the user (optionally join with products if needed)
-$sql = "SELECT 
-            p.purchase_id,
-            p.purchase_date,
-            p.total_amount,
-            p.quantity,
-            p.product_id,
-            pr.product_name
+if ($purchase_id) {
+    $stmt = $connect->prepare("
+        SELECT p.purchase_id, p.customer_id, p.product_id, p.quantity, p.total_amount, p.purchase_date,
+               pr.name as product_name, pr.price, pr.product_image,
+               pm.payment_status, pm.payment_method
         FROM purchases p
-        LEFT JOIN products pr ON p.product_id = pr.product_id
+        JOIN products pr ON p.product_id = pr.id
+        LEFT JOIN payments pm ON p.purchase_id = pm.purchase_id
+        WHERE p.purchase_id = ?
+    ");
+    $stmt->bind_param("i", $purchase_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        echo json_encode($result->fetch_assoc());
+    } else {
+        echo json_encode(['error' => true, 'message' => 'Order not found']);
+    }
+    $stmt->close();
+} else {
+    // Existing orders list logic
+    $stmt = $connect->prepare("
+        SELECT p.purchase_id, p.purchase_date, p.quantity, p.total_amount, 
+               pm.payment_status, pm.payment_method
+        FROM purchases p
+        LEFT JOIN payments pm ON p.purchase_id = pm.purchase_id
         WHERE p.customer_id = ?
-        ORDER BY p.purchase_date DESC";
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $userId);
-$stmt->execute();
-$result = $stmt->get_result();
-
-$orders = [];
-
-while ($row = $result->fetch_assoc()) {
-    $orders[] = [
-        'id' => 'ORD-' . str_pad($row['purchase_id'], 3, '0', STR_PAD_LEFT),
-        'orderDate' => $row['purchase_date'],
-        'total' => (float) $row['total_amount'],
-        'status' => 'completed',  // Hardcoded unless you have a real status column
-        'items' => (int) $row['quantity'],
-        'productName' => $row['product_name'],
-        'paymentMethod' => 'Credit Card', // Static unless you store it
-        'paymentStatus' => 'paid'         // Static unless you store it
-    ];
+    ");
+    $stmt->bind_param("i", $_GET['customer_id']);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    $orders = [];
+    while ($row = $result->fetch_assoc()) {
+        $orders[] = $row;
+    }
+    
+    echo json_encode($orders);
+    $stmt->close();
 }
-
-echo json_encode($orders);
-$conn->close();
 ?>

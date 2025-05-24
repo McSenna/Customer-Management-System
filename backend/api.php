@@ -1,8 +1,4 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 include_once './config/database.php';
 include_once './header/header.php';
 
@@ -10,72 +6,17 @@ header('Content-Type: application/json');
 
 $res = ['error' => false];
 $action = isset($_GET['action']) ? $_GET['action'] : '';
-
-try {
-    switch($action) {
-        case 'insert':
-            if (file_exists('./data/insert.php')) {
-                include './data/insert.php';
-                insert();
-            } else {
-                throw new Exception('Insert file not found');
-            }
-            break;
-                
-        case 'fetch':
-            if (file_exists('./data/admin/fetch.php')) {
-                include './data/admin/fetch.php';
-                fetchCustomer();
-            } else {
-                throw new Exception('Fetch file not found');
-            }
-            break;
-                
-        case 'fetchproducts':
-            if (file_exists('./data/admin/fetchproducts.php')) {
-                include './data/admin/fetchproducts.php';
-                fetchProducts();
-            } else {
-                throw new Exception('Fetchproducts file not found');
-            }
+switch($action) {
+    case 'insert':
+        include './data/insert.php';
+            insert();
             break;
 
-        case 'login':
-            if (file_exists('./data/public/login.php')) {
-                include './data/public/login.php';
-                Login();
-            } else {
-                throw new Exception('Login file not found');
-            }
+    case 'fetch':
+        include './data/admin/fetch.php';
+            fetchCustomer();
             break;
 
-        case 'add':
-            if (file_exists('./data/public/addcustomer.php')) {
-                include './data/public/addcustomer.php';
-                addCustomer();
-            } else {
-                throw new Exception('Add customer file not found');
-            }
-            break;
-
-        case 'addproducts':
-            if (file_exists('./data/admin/addproducts.php')) {
-                include './data/admin/addproducts.php';
-                addProduct();
-            } else {
-                throw new Exception('Add products file not found');
-            }
-            break;
-            
-        default:
-            $res = [
-                'error' => true,
-                'message' => 'Invalid action: ' . $action
-            ];
-            echo json_encode($res);
-            break;
-<<<<<<< HEAD
-            
     case 'fetchproducts':
         include './data/admin/fetchproducts.php';
             fetchProducts();
@@ -100,7 +41,34 @@ try {
         include './data/public/get_customer.php';
         get_customer();
         break;
-        
+
+    case 'add_to_cart':
+            include './data/cart/add_to_cart.php';
+            addToCart();
+            break;
+
+        case 'get_cart':
+            include './data/cart/get_cart.php';
+            getCart();
+            break;
+
+        case 'update_cart_quantity':
+            include './data/cart/update_cart_quantity.php';
+            updateCartQuantity();
+            break;
+
+        case 'remove_from_cart':
+            include './data/cart/remove_from_cart.php';
+            removeFromCart();
+            break;
+
+        case 'create_order':
+            include './data/orders/create_order.php';
+            createOrder();
+            break;
+
+
+
     default:
         $res = [
             'error' => true,
@@ -108,15 +76,4 @@ try {
         ];
         echo json_encode($res);
         break;
-}
-=======
     }
-} catch (Exception $e) {
-    $res = [
-        'error' => true,
-        'message' => 'Server error: ' . $e->getMessage()
-    ];
-    echo json_encode($res);
-}
-?>
->>>>>>> 6b0b7d0957bd4f93364de775c2fd0291b569e7be
