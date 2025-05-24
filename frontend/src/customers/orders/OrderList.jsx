@@ -13,69 +13,42 @@ const OrderList = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const mockOrders = [
-          {
-            id: 'ORD-001',
-            orderDate: '2024-01-15',
-            total: 299.99,
-            status: 'completed',
-            items: 3,
-            paymentMethod: 'Credit Card',
-            paymentStatus: 'paid' // Added payment status
-          },
-          {
-            id: 'ORD-002',
-            orderDate: '2024-01-14',
-            total: 159.50,
-            status: 'pending',
-            items: 2,
-            paymentMethod: 'PayPal',
-            paymentStatus: 'unpaid' // Added payment status
-          },
-          {
-            id: 'ORD-003',
-            orderDate: '2024-01-13',
-            total: 89.99,
-            status: 'processing',
-            items: 1,
-            paymentMethod: 'Bank Transfer',
-            paymentStatus: 'paid' // Added payment status
-          },
-          {
-            id: 'ORD-004',
-            orderDate: '2024-01-12',
-            total: 449.99,
-            status: 'shipped',
-            items: 5,
-            paymentMethod: 'Credit Card',
-            paymentStatus: 'paid' // Added payment status
-          },
-          {
-            id: 'ORD-005',
-            orderDate: '2024-01-11',
-            total: 199.99,
-            status: 'cancelled',
-            items: 2,
-            paymentMethod: 'PayPal',
-            paymentStatus: 'refunded' // Added payment status
-          }
-        ];
-        
-        setTimeout(() => {
-          setOrders(mockOrders);
-          setLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-        setLoading(false);
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch('http://localhost/customer_management_system/backend/orders.php', {
+        credentials: 'include', // send cookies if using PHP sessions
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
       }
-    };
+      const data = await response.json();
 
-    fetchOrders();
-  }, []);
+      // Map your backend data to expected frontend shape here if needed
+      // For example, your backend returns purchases with purchase_id, total_amount, etc.
+      // You can map to your frontend's expected fields: id, orderDate, total, status, items, paymentStatus, etc.
+
+      const mappedOrders = data.map(order => ({
+        id: order.purchase_id,
+        orderDate: order.purchase_date,
+        total: parseFloat(order.total_amount) || 0,
+        status: order.status || 'pending',  // You might need to adjust based on your DB schema
+        items: order.quantity || 1,
+        paymentMethod: order.payment_method || 'Unknown',
+        paymentStatus: order.payment_status || 'unpaid'
+      }));
+
+      setOrders(mappedOrders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchOrders();
+}, []);
+
 
   const getStatusColor = (status) => {
     const statusColors = {
