@@ -40,7 +40,7 @@ const Router = () => {
                     <Route path="orders/list" element={<OrderList />} />
                     <Route path="orders/:id/payment" element={<OrderPayment />} />
                     <Route path="orders/:id/status" element={<OrderStatus />} />
-                    <Route path="customer/cart" element={<CustomerCart />} />
+                    <Route path="cart" element={<CustomerCart />} />
                 </Route>
                 
                 {/* Admin Routes */}
