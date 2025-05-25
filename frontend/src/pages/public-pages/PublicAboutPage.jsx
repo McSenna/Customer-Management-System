@@ -103,7 +103,7 @@ const PublicAboutPage = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Our Team</h2>
             <p className="text-gray-600 mb-6">
-                Meet the dedicated professionals behind CustomerCRM who are passionate about helping businesses improve their customer relationships.
+                Meet the dedicated professionals behind Customer Management System who are passionate about helping businesses improve their customer relationships.
             </p>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mt-6">
@@ -142,7 +142,7 @@ const PublicAboutPage = () => {
                 <div className="group relative text-center">
                     <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-xl shadow-md transition-all duration-300 group-hover:shadow-lg">
                         <img 
-                            src="/api/placeholder/96/96" 
+                            src="/ian.png" 
                             alt="Ian James Villanueva"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
@@ -160,9 +160,9 @@ const PublicAboutPage = () => {
                             </div>
                         </div>
                     </div>
-                    <h3 className="font-medium text-gray-800 text-lg">Ian James Villanueva</h3>
+                    <h3 className="font-medium text-gray-800 text-lg">Ian James A. Villanueva</h3>
                     <p className="text-blue-600 text-sm mb-1">CTO</p>
-                    <p className="text-gray-500 text-xs">Technology architect and innovation driver</p>
+                    <p className="text-gray-500 text-xs">ALL AROUND</p>
                 </div>
                 
                 <div className="group relative text-center">

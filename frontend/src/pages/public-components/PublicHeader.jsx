@@ -18,7 +18,7 @@ const PublicHeader = () => {
                 <div className="px-6 py-4 flex items-center justify-between">
                     {/* Logo and Title */}
                     <div className="flex items-center">
-                        <h1 className="text-xl font-bold text-blue-600">CustomerCRM</h1>
+                        <h1 className="text-xl font-bold text-blue-600">CMS</h1>
                     </div>
                     
                     {/* Navigation Links (Center) */}

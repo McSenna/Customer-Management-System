@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Eye, Filter, Search, Grid, List } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Truck, Shield, RotateCcw, Eye, Plus, Minus, Filter, Search, Grid, List } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CustomerProducts = () => {
@@ -14,53 +14,32 @@ const CustomerProducts = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showQuickView, setShowQuickView] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [navigating, setNavigating] = useState(false);
 
   const navigate = useNavigate();
   const customerId = sessionStorage.getItem('customer_id');
+
   const apiUrl = 'http://localhost/customer-management-system/backend/api.php?action=';
   const baseUrl = 'http://localhost/customer-management-system/backend/';
 
-  const showMessage = (message, isError = false) => {
-    if (isError) {
-      setError(message);
-      setSuccess('');
-    } else {
-      setSuccess(message);
-      setError('');
-    }
-    setTimeout(() => {
-      setError('');
-      setSuccess('');
-    }, 3000);
-  };
-
   useEffect(() => {
     fetchProducts();
-    if (customerId) {
-      fetchCart();
-    } else {
-      showMessage('Session expired. Please log in again.', true);
-      navigate('/login');
-    }
-  }, [customerId, navigate]);
+    if (customerId) fetchCart();
+  }, [customerId]);
 
   const fetchProducts = async () => {
     try {
       const response = await fetch(`${apiUrl}fetchproducts`);
       const data = await response.json();
       if (data.error) {
-        showMessage(data.message || 'Failed to load products', true);
+        console.error('API Error:', data.message);
         setProducts([]);
       } else {
         setProducts(Array.isArray(data) ? data : []);
       }
+      setLoading(false);
     } catch (error) {
-      showMessage('Error fetching products', true);
+      console.error('Error fetching products:', error);
       setProducts([]);
-    } finally {
       setLoading(false);
     }
   };
@@ -75,15 +54,17 @@ const CustomerProducts = () => {
           id: item.product_id,
           quantity: item.quantity
         })));
-      } else {
-        showMessage(data.message || 'Failed to load cart', true);
       }
     } catch (error) {
-      showMessage('Error fetching cart', true);
+      console.error('Error fetching cart:', error);
     }
   };
 
   const addToCart = async (product, quantity = 1) => {
+    if (!customerId) {
+      navigate('/login');
+      return;
+    }
     try {
       const response = await fetch(`${apiUrl}add_to_cart`, {
         method: 'POST',
@@ -93,16 +74,56 @@ const CustomerProducts = () => {
       const data = await response.json();
       if (!data.error) {
         await fetchCart();
-        showMessage('Added to cart!');
       } else {
-        showMessage(data.message || 'Failed to add to cart', true);
+        console.error('Error adding to cart:', data.message);
       }
     } catch (error) {
-      showMessage('Error adding to cart', true);
+      console.error('Error adding to cart:', error);
+    }
+  };
+
+  const updateQuantity = async (cartId, quantity) => {
+    if (quantity < 1) return;
+    try {
+      const response = await fetch(`${apiUrl}update_cart_quantity`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart_id: cartId, quantity })
+      });
+      const data = await response.json();
+      if (!data.error) {
+        await fetchCart();
+      } else {
+        console.error('Error updating quantity:', data.message);
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+    }
+  };
+
+  const removeFromCart = async (cartId) => {
+    try {
+      const response = await fetch(`${apiUrl}remove_from_cart`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cart_id: cartId })
+      });
+      const data = await response.json();
+      if (!data.error) {
+        await fetchCart();
+      } else {
+        console.error('Error removing from cart:', data.message);
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error);
     }
   };
 
   const buyNow = async (product) => {
+    if (!customerId) {
+      navigate('/login');
+      return;
+    }
     try {
       await addToCart(product);
       const response = await fetch(`${apiUrl}create_order`, {
@@ -117,17 +138,17 @@ const CustomerProducts = () => {
       if (!data.error) {
         navigate(`/customer/orders/${data.purchase_id}/payment`);
       } else {
-        showMessage(data.message || 'Failed to create order', true);
+        console.error('Error creating order:', data.message);
       }
     } catch (error) {
-      showMessage('Error creating order', true);
+      console.error('Error creating order:', error);
     }
   };
 
   const toggleWishlist = (productId) => {
-    setWishlist(prev =>
-      prev.includes(productId)
-        ? prev.filter(id => id !== productId)
+    setWishlist(prev => 
+      prev.includes(productId) 
+        ? prev.filter(id => id !== productId) 
         : [...prev, productId]
     );
   };
@@ -135,7 +156,7 @@ const CustomerProducts = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false;
     const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    const matchesPrice = priceRange === 'all' ||
+    const matchesPrice = priceRange === 'all' || 
       (priceRange === 'under50' && product.price < 50) ||
       (priceRange === '50to100' && product.price >= 50 && product.price <= 100) ||
       (priceRange === 'over100' && product.price > 100);
@@ -192,18 +213,6 @@ const CustomerProducts = () => {
     return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
-  const handleViewCart = async () => {
-    setNavigating(true);
-    try {
-      await fetchCart(); // Refresh cart before navigating
-      navigate('/customer/cart');
-    } catch (error) {
-      showMessage('Error navigating to cart', true);
-    } finally {
-      setNavigating(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -220,23 +229,17 @@ const CustomerProducts = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Messages */}
-      {(error || success) && (
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className={`p-4 rounded-lg flex items-center space-x-2 transition-all duration-300 ${
-            error ? 'bg-red-50 text-red-800 border border-red-200' : 'bg-green-50 text-green-800 border border-green-200'
-          }`}>
-            <AlertCircle className="w-5 h-5 flex-shrink-0" />
-            <span>{error || success}</span>
-          </div>
-        </div>
-      )}
-
-      {/* Search and Filters Section */}
+      {/* Header Section */}
       <div className="bg-white shadow-sm border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          {/* Search Bar */}
+          {/* Title and Search Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Products</h1>
+              <p className="text-gray-600 text-sm">Discover amazing products</p>
+            </div>
+            
+            {/* Search Bar */}
             <div className="relative max-w-md w-full">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
@@ -248,7 +251,7 @@ const CustomerProducts = () => {
               />
             </div>
           </div>
-
+          
           {/* Filters and View Toggle Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -259,7 +262,7 @@ const CustomerProducts = () => {
                 <Filter className="w-4 h-4 mr-2" />
                 Filters
               </button>
-
+              
               {showFilters && (
                 <div className="flex flex-wrap items-center gap-3">
                   <select
@@ -274,7 +277,7 @@ const CustomerProducts = () => {
                     <option value="sports">Sports</option>
                     <option value="food">Food & Beverage</option>
                   </select>
-
+                  
                   <select
                     value={priceRange}
                     onChange={(e) => setPriceRange(e.target.value)}
@@ -288,18 +291,18 @@ const CustomerProducts = () => {
                 </div>
               )}
             </div>
-
+            
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">
                 {filteredProducts.length} products
               </span>
-
+              
               <div className="flex items-center ml-4 bg-gray-100 rounded-lg p-1">
                 <button
                   onClick={() => setViewMode('grid')}
                   className={`p-2 rounded-md transition-all duration-200 ${
-                    viewMode === 'grid'
-                      ? 'bg-white text-blue-600 shadow-sm'
+                    viewMode === 'grid' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -308,8 +311,8 @@ const CustomerProducts = () => {
                 <button
                   onClick={() => setViewMode('list')}
                   className={`p-2 rounded-md transition-all duration-200 ${
-                    viewMode === 'list'
-                      ? 'bg-white text-blue-600 shadow-sm'
+                    viewMode === 'list' 
+                      ? 'bg-white text-blue-600 shadow-sm' 
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -337,13 +340,10 @@ const CustomerProducts = () => {
                   {formatPrice(getTotalCartValue())}
                 </span>
                 <button
-                  onClick={handleViewCart}
-                  disabled={navigating}
-                  className={`bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors ${
-                    navigating ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
+                  onClick={() => navigate('/customer/cart')}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  {navigating ? 'Loading...' : 'View Cart'}
+                  View Cart
                 </button>
               </div>
             </div>
@@ -356,8 +356,8 @@ const CustomerProducts = () => {
         {viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
+              <div 
+                key={product.id} 
                 className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-200 group"
               >
                 {/* Product Image */}
@@ -366,11 +366,11 @@ const CustomerProducts = () => {
                     src={getImageUrl(product)}
                     alt={product.name || 'Product'}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop';
+                    onError={(e) => { 
+                      e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop'; 
                     }}
                   />
-
+                  
                   {/* Overlay Actions */}
                   <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                     <button
@@ -398,7 +398,7 @@ const CustomerProducts = () => {
                       -{product.discount}%
                     </div>
                   )}
-
+                  
                   {product.stocks < 10 && product.stocks > 0 && (
                     <div className="absolute bottom-3 left-3 bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                       Only {product.stocks} left!
@@ -411,7 +411,7 @@ const CustomerProducts = () => {
                   <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
                     {product.name || 'Unnamed Product'}
                   </h3>
-
+                  
                   {/* Rating */}
                   <div className="flex items-center mb-3">
                     <div className="flex">{getRatingStars(product.rating)}</div>
@@ -419,7 +419,7 @@ const CustomerProducts = () => {
                       ({product.reviews || Math.floor(Math.random() * 50) + 10})
                     </span>
                   </div>
-
+                  
                   {/* Price */}
                   <div className="flex items-center mb-4">
                     <span className="text-xl font-bold text-gray-900">
@@ -472,8 +472,8 @@ const CustomerProducts = () => {
           /* List View */
           <div className="space-y-4">
             {filteredProducts.map((product) => (
-              <div
-                key={product.id}
+              <div 
+                key={product.id} 
                 className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden border border-gray-200 flex"
               >
                 {/* Product Image */}
@@ -482,11 +482,11 @@ const CustomerProducts = () => {
                     src={getImageUrl(product)}
                     alt={product.name || 'Product'}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop';
+                    onError={(e) => { 
+                      e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop'; 
                     }}
                   />
-
+                  
                   <button
                     onClick={() => toggleWishlist(product.id)}
                     className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md hover:bg-gray-50 transition-all duration-200"
@@ -503,7 +503,7 @@ const CustomerProducts = () => {
                     <h3 className="text-xl font-semibold text-gray-900 mb-2">
                       {product.name || 'Unnamed Product'}
                     </h3>
-
+                    
                     <div className="flex items-center mb-3">
                       <div className="flex">{getRatingStars(product.rating)}</div>
                       <span className="ml-2 text-sm text-gray-500">
@@ -514,7 +514,7 @@ const CustomerProducts = () => {
                     {product.description && (
                       <p className="text-gray-600 mb-4 line-clamp-2">{product.description}</p>
                     )}
-
+                    
                     <div className="flex items-center justify-between text-xs text-gray-500 mb-4 bg-gray-50 rounded-lg p-3">
                       <div className="flex items-center">
                         <Truck className="w-4 h-4 mr-1 text-green-500" />
@@ -542,7 +542,7 @@ const CustomerProducts = () => {
                         </span>
                       )}
                     </div>
-
+                    
                     <div className="flex items-center space-x-3">
                       <button
                         onClick={() => openQuickView(product)}
@@ -598,11 +598,8 @@ const CustomerProducts = () => {
       {cart.length > 0 && (
         <div className="fixed bottom-6 right-6 z-50">
           <button
-            onClick={handleViewCart}
-            disabled={navigating}
-            className={`bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transform hover:scale-110 transition-all duration-200 ${
-              navigating ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            onClick={() => navigate('/customer/cart')}
+            className="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transform hover:scale-110 transition-all duration-200"
           >
             <div className="flex items-center">
               <ShoppingCart className="w-6 h-6" />
@@ -628,8 +625,8 @@ const CustomerProducts = () => {
                   src={getImageUrl(selectedProduct)}
                   alt={selectedProduct.name || 'Product'}
                   className="w-full h-80 md:h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop';
+                  onError={(e) => { 
+                    e.target.src = 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=500&fit=crop'; 
                   }}
                 />
               </div>
@@ -643,14 +640,14 @@ const CustomerProducts = () => {
                     ×
                   </button>
                 </div>
-
+                
                 <div className="flex items-center mb-4">
                   <div className="flex">{getRatingStars(selectedProduct.rating)}</div>
                   <span className="ml-2 text-gray-600">
                     ({selectedProduct.reviews || Math.floor(Math.random() * 50) + 10} reviews)
                   </span>
                 </div>
-
+                
                 <div className="flex items-center mb-6">
                   <span className="text-3xl font-bold text-gray-900">
                     {formatPrice(selectedProduct.price)}
@@ -661,11 +658,11 @@ const CustomerProducts = () => {
                     </span>
                   )}
                 </div>
-
+                
                 <p className="text-gray-600 mb-6 leading-relaxed">
                   {selectedProduct.description}
                 </p>
-
+                
                 <div className="space-y-3">
                   <button
                     onClick={() => {
