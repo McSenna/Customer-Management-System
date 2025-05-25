@@ -13,7 +13,6 @@ import AdminOrders from '../admin/admin-pages/AdminOrders';
 import NotFound from '../auth/NotFound';
 import CustomerProducts from '../customers/customers-pages/CustomerProducts';
 import CustomerProfile from '../customers/customers-pages/CustomerProfile';
-
 import OrderList from '../customers/orders/OrderList';
 import OrderPayment from '../customers/orders/OrdersPayment';
 import OrderStatus from '../customers/orders/OrderStatus';
@@ -34,7 +33,7 @@ const Router = () => {
                 <Route path='/customer' element={<CustomerLayout/>}>
                     <Route index element={<CustomerDashboard />} />
                     <Route path="dashboard" element={<CustomerDashboard />} />
-                    <Route path="products" element={<CustomerProducts/>} />
+                    <Route path="products" element={<CustomerProducts/>}></Route>
                     <Route path="orders" element={<OrderList />} />
                     <Route path="profile" element={<CustomerProfile/>} />
                     <Route path="orders/list" element={<OrderList />} />

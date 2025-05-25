@@ -9,7 +9,6 @@ const CustomerHeader = () => {
     const location = useLocation();
     const nav = useNavigate();
 
-    // Update customerName if it changes in localStorage (for example, after login)
     useEffect(() => {
         const handleStorage = () => {
             setCustomerName(localStorage.getItem('customerName') || 'Customer');
@@ -19,7 +18,7 @@ const CustomerHeader = () => {
     }, []);
 
     const handleLogout = async () => {
-        if(window.confirm("Are you sure you want to log out?")) {
+        if (window.confirm("Are you sure you want to log out?")) {
             localStorage.removeItem('customerData');
             localStorage.removeItem('customerId');
             localStorage.removeItem('customerName');
@@ -28,7 +27,7 @@ const CustomerHeader = () => {
             nav('/');
         }
     };
-    
+
     const navItems = [
         {
             name: 'Dashboard',
@@ -52,18 +51,18 @@ const CustomerHeader = () => {
             )
         }
     ];
-    
+
     return (
-        <header className="bg-white border-b border-gray-200 shadow">
+        <header className="bg-white border-b border-gray-200 shadow sticky top-0 z-50">
             {/* Top header with logo and actions */}
             <div className="px-4 py-3 lg:px-6 flex items-center justify-between">
                 <div className="flex items-center">
                     <h1 className="text-2xl font-bold text-gray-800">Customer Dashboard</h1>
                 </div>
-                
+
                 <div className="flex items-center space-x-4">
                     {/* Mobile menu button */}
-                    <button 
+                    <button
                         className="md:hidden p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
@@ -77,7 +76,7 @@ const CustomerHeader = () => {
                             </svg>
                         )}
                     </button>
-                    
+
                     {/* Search Bar */}
                     <div className="hidden md:block">
                         <div className="relative">
@@ -86,13 +85,17 @@ const CustomerHeader = () => {
                                     <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                 </svg>
                             </div>
-                            <input className="block w-full bg-gray-100 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" type="text" placeholder="Search products..." />
+                            <input
+                                className="block w-full bg-gray-100 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                                type="text"
+                                placeholder="Search products..."
+                            />
                         </div>
                     </div>
-                    
+
                     {/* Notifications */}
                     <div className="relative">
-                        <button 
+                        <button
                             className="p-1 rounded-full text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                         >
@@ -102,9 +105,9 @@ const CustomerHeader = () => {
                             </svg>
                             <span className="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
                         </button>
-                        
+
                         {isNotificationsOpen && (
-                            <div className="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                            <div className="absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div className="py-1" role="menu" aria-orientation="vertical">
                                     <div className="px-4 py-2 border-b border-gray-200">
                                         <p className="text-sm font-medium text-gray-700">Notifications</p>
@@ -150,10 +153,10 @@ const CustomerHeader = () => {
                             </div>
                         )}
                     </div>
-                    
+
                     {/* User Menu */}
                     <div className="relative">
-                        <button 
+                        <button
                             className="flex items-center space-x-2 focus:outline-none"
                             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
                         >
@@ -165,9 +168,9 @@ const CustomerHeader = () => {
                                 <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                             </svg>
                         </button>
-                        
+
                         {isUserMenuOpen && (
-                            <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                            <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                                 <div className="py-1" role="menu" aria-orientation="vertical">
                                     <Link to="/customer/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Profile</Link>
                                     <Link to="/customer/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">My Orders</Link>
@@ -179,7 +182,7 @@ const CustomerHeader = () => {
                     </div>
                 </div>
             </div>
-            
+
             {/* Main Navigation */}
             <nav className="hidden md:block bg-white px-6 py-3 border-t border-gray-100">
                 <ul className="flex space-x-8 justify-center">
@@ -187,10 +190,10 @@ const CustomerHeader = () => {
                         const isActive = location.pathname === item.path;
                         return (
                             <li key={index}>
-                                <Link 
-                                    to={item.path} 
+                                <Link
+                                    to={item.path}
                                     className={`flex items-center px-1 py-2 text-sm font-medium border-b-2 ${
-                                        isActive 
+                                        isActive
                                         ? 'text-blue-600 border-blue-600'
                                         : 'text-gray-600 border-transparent hover:text-blue-600 hover:border-blue-300'
                                     }`}
@@ -203,7 +206,7 @@ const CustomerHeader = () => {
                     })}
                 </ul>
             </nav>
-            
+
             {/* Mobile Navigation Menu */}
             {isMobileMenuOpen && (
                 <nav className="md:hidden bg-white border-t border-gray-200 px-4 py-2">
@@ -212,11 +215,11 @@ const CustomerHeader = () => {
                             const isActive = location.pathname === item.path;
                             return (
                                 <li key={index}>
-                                    <Link 
-                                        to={item.path} 
+                                    <Link
+                                        to={item.path}
                                         className={`flex items-center px-3 py-2 rounded-md text-base font-medium ${
-                                            isActive 
-                                            ? 'bg-blue-50 text-blue-600' 
+                                            isActive
+                                            ? 'bg-blue-50 text-blue-600'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
                                         }`}
                                         onClick={() => setIsMobileMenuOpen(false)}
@@ -235,7 +238,11 @@ const CustomerHeader = () => {
                                         <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
                                     </svg>
                                 </div>
-                                <input className="block w-full bg-gray-100 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white" type="text" placeholder="Search products..." />
+                                <input
+                                    className="block w-full bg-gray-100 border border-gray-200 rounded-lg pl-10 pr-4 py-2 text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                                    type="text"
+                                    placeholder="Search products..."
+                                />
                             </div>
                         </li>
                     </ul>
